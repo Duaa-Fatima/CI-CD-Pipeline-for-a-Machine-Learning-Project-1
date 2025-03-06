@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "wthduaa/diabetes-predictor"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/Duaa-Fatima/CI-CD-Pipeline-for-a-Machine-Learning-Project-1.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh "docker login -u your-docker-username -p your-docker-password"
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    sh "docker push ${DOCKER_IMAGE}:latest"
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    sh "docker stop diabetes-predictor || true"
+                    sh "docker rm diabetes-predictor || true"
+                    sh "docker run -d --name diabetes-predictor -p 5000:5000 ${DOCKER_IMAGE}:latest"
+                }
+            }
+        }
+    }
+}
