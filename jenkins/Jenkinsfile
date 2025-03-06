@@ -23,7 +23,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh "docker login -u your-docker-username -p your-docker-password"
+                    sh "docker login -u wthduaa -p abeehanoor"
                 }
             }
         }
@@ -44,6 +44,23 @@ pipeline {
                     sh "docker run -d --name diabetes-predictor -p 5000:5000 ${DOCKER_IMAGE}:latest"
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            emailext(
+                subject: "Jenkins Build Successful: ${env.JOB_NAME}",
+                body: "The deployment was successful!\n\nBuild: ${env.BUILD_URL}",
+                to: "fatimaduaa053@gmail.com"
+            )
+        }
+        failure {
+            emailext(
+                subject: "Jenkins Build Failed: ${env.JOB_NAME}",
+                body: "The deployment failed. Please check logs.\n\nBuild: ${env.BUILD_URL}",
+                to: "fatimaduaa053@gmail.com"
+            )
         }
     }
 }
