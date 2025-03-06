@@ -1,0 +1,12 @@
+blinker
+click
+colorama
+Flask
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
+numpy
+joblib
+pandas
+scikit-learn
