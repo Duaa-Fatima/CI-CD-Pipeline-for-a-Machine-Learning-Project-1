@@ -1,55 +1,36 @@
 pipeline {
-   agent any
-   
-   stages {
-       stage('Checkout') {
-           steps {
-               checkout([
-                   $class: 'GitSCM',
-                   branches: [[name: '*/dev']], // Ensure we are checking out the dev branch
-                   userRemoteConfigs: [[url: 'https://github.com/Duaa-Fatima/CI-CD-Pipeline-for-a-Machine-Learning-Project-1']]
-               ])
-           }
-       }
-       
-       stage('Build Docker Image') {
-           steps {
-               bat 'docker build -t wthduaa/diabetes-predictor:latest -f docker/Dockerfile .' 
-           }
-       }
-       
-       stage('Push to Docker Hub') {
-           steps {
-               withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                   bat 'echo %DOCKER_PASSWORD%> temp.txt'
-                   bat 'type temp.txt | docker login -u %DOCKER_USERNAME% --password-stdin'
-                   bat 'del temp.txt'
-                   
-                   // Push the image
-                   bat 'docker push wthduaa/diabetes-predictor:latest'
-               }
-           }
-       }
-       
-       stage('Email Notification') {
-           steps {
-               emailext (
-                   subject: "CI/CD Pipeline: Build #${BUILD_NUMBER} - Successfully Deployed",
-                   body: """
-                   <p>The deployment to production was successful.</p>
-                   <p><b>Details:</b></p>
-                   <ul>
-                       <li>Build Number: ${BUILD_NUMBER}</li>
-                       <li>Docker Image: wthduaa/diabetes-predictor:latest</li>
-                       <li>Status: SUCCESS</li>
-                   </ul>
-                   <p>The Docker image has been successfully built and pushed to Docker Hub.</p>
-                   """,
-                   mimeType: 'text/html',
-                   to: 'fatimaduaa053@gmail.com',
-                   replyTo: 'fatimaduaa053@gmail.com'
-               )
-           }
-       }
-   }
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t wthduaa/diabetes-predictor:latest docker/'
+            }
+        }
+        
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    bat 'echo %DOCKER_PASSWORD%> temp.txt'
+                    bat 'type temp.txt | docker login -u %DOCKER_USERNAME% --password-stdin'
+                    bat 'del temp.txt'
+                    bat 'docker push wthduaa/diabetes-predictor:latest'
+                }
+            }
+        }
+        
+        stage('Email Notification') {
+            steps {
+                bat '''
+                echo "CI/CD Pipeline Completed Successfully!" | mail -s "Jenkins Pipeline Success" fatimaduaa053@gmail.com
+                '''
+            }
+        }
+    }
 }
