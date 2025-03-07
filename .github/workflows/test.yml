@@ -23,5 +23,8 @@ jobs:
           pip install -r app/requirements.txt  # Specify the correct path
           pip install pytest  # Ensure pytest is installed
 
-      - name: Run Unit Tests
-        run: pytest tests/  # Adjust according to your repo structure
+      - name: Run Unit Tests (Windows)
+        run: |
+          $env:PYTHONPATH="."
+          pytest tests/
+

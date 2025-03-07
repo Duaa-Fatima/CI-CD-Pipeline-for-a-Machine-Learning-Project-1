@@ -4,9 +4,12 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
+# Get the absolute path of the current script
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Root directory
+MODEL_PATH = os.path.join(ROOT_DIR, "diabetes_model.pkl")  # Save in root
+
 # Define paths
-DATA_PATH = "data/diabetes.csv"
-MODEL_PATH = "diabetes_model.pkl"  # Save it directly in /app
+DATA_PATH = os.path.join(ROOT_DIR, "data", "diabetes.csv")  # Ensure correct path
 
 def train_model():
     """Train and save the model."""
@@ -20,7 +23,6 @@ def train_model():
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
-    # Ensure the model file is saved in /app directory
     joblib.dump(model, MODEL_PATH)
     print("Model trained and saved!")
 

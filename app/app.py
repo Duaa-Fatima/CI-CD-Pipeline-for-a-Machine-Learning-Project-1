@@ -1,19 +1,17 @@
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 import pandas as pd
-from model import load_model  # Import your ML model function
+from model import load_model  # ✅ Import from model.py (same directory)
 
-app = Flask(__name__)
+app = Flask(__name__)  # Ensure app is initialized
 
-# Load the trained model
+# Load trained model
 model = load_model()
 
-# Home route with input form
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
         try:
-            # Extract data from form
             data = [
                 float(request.form["Pregnancies"]),
                 float(request.form["Glucose"]),
@@ -25,10 +23,7 @@ def home():
                 float(request.form["Age"])
             ]
 
-            # Make prediction
-            prediction = model.predict([data])[0]  # Assuming model.predict() returns an array
-
-            # Display result
+            prediction = model.predict([data])[0]
             result = "Diabetic" if prediction == 1 else "Non-Diabetic"
             return render_template("index.html", prediction=result)
 
@@ -39,4 +34,3 @@ def home():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
