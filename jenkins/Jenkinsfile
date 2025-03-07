@@ -31,12 +31,25 @@ pipeline {
            }
        }
        
-       
        stage('Email Notification') {
            steps {
-               bat '''
-               echo "CI/CD Pipeline Completed Successfully!" | mail -s "Jenkins Pipeline Success" fatimaduaa053@gmail.com
-               '''
+               script {
+                   powershell '''
+                   $smtpServer = "smtp.gmail.com"
+                   $smtpPort = "587"
+                   $emailFrom = "fatimaduaa053@gmail.com"
+                   $emailTo = "fatimaduaa053@gmail.com"
+                   $subject = "Jenkins Pipeline Success"
+                   $body = "CI/CD Pipeline Completed Successfully!"
+                   $username = "fatimaduaa053@gmail.com"
+                   $password = "gjrt exav juqi roei"
+
+                   $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+                   $credential = New-Object System.Management.Automation.PSCredential ($username, $securePassword)
+
+                   Send-MailMessage -From $emailFrom -To $emailTo -Subject $subject -Body $body -SmtpServer $smtpServer -Port $smtpPort -UseSsl -Credential $credential
+                   '''
+               }
            }
        }
    }
