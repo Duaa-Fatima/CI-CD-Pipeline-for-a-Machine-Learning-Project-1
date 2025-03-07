@@ -2,7 +2,11 @@ pipeline {
     agent any
 
     environment {
-        PYTHON = 'python'  // Ensure correct Python installation
+        PYTHON = 'python'  
+    }
+
+    triggers {
+        githubPush()  
     }
 
     stages {
@@ -35,9 +39,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    bat 'echo %DOCKER_PASSWORD%> temp.txt'
-                    bat 'type temp.txt | docker login -u %DOCKER_USERNAME% --password-stdin'
-                    bat 'del temp.txt'
+                    bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
                     
                     // Push the image
                     bat 'docker push wthduaa/diabetes-predictor:latest'
