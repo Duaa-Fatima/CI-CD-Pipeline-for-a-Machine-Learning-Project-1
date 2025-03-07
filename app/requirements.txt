@@ -11,3 +11,4 @@ joblib
 pandas
 scikit-learn
 flake8
+pytest
