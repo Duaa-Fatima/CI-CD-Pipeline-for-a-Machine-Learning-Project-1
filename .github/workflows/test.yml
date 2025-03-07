@@ -3,28 +3,23 @@ name: Feature Testing
 on:
   pull_request:
     branches:
-      - test
+      - test  # Runs when a PR is made to test
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: '3.8'
 
       - name: Install Dependencies
-        run: |
-          pip install -r app/requirements.txt  # Specify the correct path
-          pip install pytest  # Ensure pytest is installed
+        run: pip install -r requirements.txt
 
-      - name: Run Unit Tests (Windows)
-        run: |
-          $env:PYTHONPATH="."
-          pytest tests/
-
+      - name: Run Unit Tests
+        run: pytest tests/

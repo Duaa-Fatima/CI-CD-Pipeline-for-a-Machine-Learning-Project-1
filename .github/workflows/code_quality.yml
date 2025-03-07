@@ -1,24 +1,25 @@
-name: Flake8 Code Quality Check
+name: Code Quality Check
 
 on:
   pull_request:
     branches:
-      - dev  # Runs when a PR is made to `dev`
+      - dev  # Runs when a PR is made to dev
 
 jobs:
-  lint:
+  flake8-check:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set Up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.8'
 
-      - name: Install dependencies
+      - name: Install Flake8
         run: pip install flake8
 
       - name: Run Flake8
-        run: flake8 --max-line-length=120 .  # Adjust as needed
+        run: flake8 app --max-line-length=100
