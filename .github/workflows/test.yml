@@ -22,7 +22,15 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install --no-cache-dir --force-reinstall -r requirements.txt
+          pip install --no-cache-dir --force-reinstall scikit-learn==1.6.1 numpy joblib pytest
+
+      - name: Debug Installed Packages
+        run: |
+          python -c "import sklearn; print('Scikit-learn:', sklearn.__version__)"
+          python -c "import numpy; print('Numpy:', numpy.__version__)"
+          python -c "import joblib; print('Joblib:', joblib.__version__)"
 
       - name: Run Unit Tests
         run: pytest tests/
