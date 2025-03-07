@@ -24,7 +24,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --no-cache-dir --force-reinstall -r requirements.txt
-          pip install --no-cache-dir --force-reinstall scikit-learn==1.6.1 numpy joblib pytest
 
       - name: Debug Installed Packages
         run: |
