@@ -16,6 +16,16 @@ pipeline {
             }
         }
 
+        stage('Flake8 Code Quality Check') {
+            steps {
+                script {
+                    echo 'Installing and running Flake8...'
+                    bat 'python -m pip install flake8'
+                    bat 'python -m flake8 app --max-line-length=100'  // Adjust directory if needed
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t wthduaa/diabetes-predictor:latest -f docker/Dockerfile .' 
